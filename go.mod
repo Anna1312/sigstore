@@ -1,6 +1,8 @@
 module github.com/sigstore/sigstore
 
-go 1.20
+go 1.22
+
+toolchain go1.22.5
 
 require (
 	github.com/coreos/go-oidc/v3 v3.9.0
@@ -16,6 +18,7 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/stretchr/testify v1.8.4
 	github.com/theupdateframework/go-tuf v0.7.0
+	github.com/tjfoc/gmsm v1.4.1
 	golang.org/x/crypto v0.20.0
 	golang.org/x/oauth2 v0.17.0
 	golang.org/x/term v0.17.0
@@ -40,3 +43,7 @@ require (
 	gopkg.in/go-jose/go-jose.v2 v2.6.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+require github.com/sigstore/sigstore/pkg/signature/gm/sm2 v0.0.0
+
+replace github.com/sigstore/sigstore/pkg/signature/gm/sm2 => ./pkg/signature/gm/sm2

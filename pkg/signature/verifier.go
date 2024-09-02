@@ -21,6 +21,8 @@ import (
 	"crypto/ed25519"
 	"crypto/rsa"
 	"errors"
+	"github.com/sigstore/sigstore/pkg/signature/gm/sm2"
+	gmsm2 "github.com/tjfoc/gmsm/sm2"
 	"io"
 	"os"
 	"path/filepath"
@@ -69,6 +71,8 @@ func LoadVerifierWithOpts(publicKey crypto.PublicKey, opts ...LoadOption) (Verif
 			return LoadED25519phVerifier(pk)
 		}
 		return LoadED25519Verifier(pk)
+	case gmsm2.PublicKey:
+		return sm2.LoadGMSM2Verifier(pk)
 	}
 	return nil, errors.New("unsupported public key type")
 }
