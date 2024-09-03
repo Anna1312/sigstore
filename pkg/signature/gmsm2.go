@@ -1,4 +1,4 @@
-package sm2
+package signature
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	sigopts "github.com/sigstore/sigstore/pkg/signature"
 	gmsm2 "github.com/tjfoc/gmsm/sm2"
 	"io"
 )
@@ -28,7 +27,7 @@ func LoadGMSM2Signer(priv gmsm2.PrivateKey) (*GMSM2Signer, error) {
 // signing process.
 //
 // All options are ignored.
-func (e GMSM2Signer) SignMessage(message io.Reader, _ ...sigopts.SignOption) ([]byte, error) {
+func (e GMSM2Signer) SignMessage(message io.Reader, _ ...SignOption) ([]byte, error) {
 	buffer := bytes.Buffer{}
 	_, err := buffer.ReadFrom(message)
 	if err != nil {
@@ -47,7 +46,7 @@ func (e GMSM2Signer) Public() crypto.PublicKey {
 // PublicKey returns the public key that can be used to verify signatures created by
 // this signer. As this value is held in memory, all options provided in arguments
 // to this method are ignored.
-func (e GMSM2Signer) PublicKey(_ ...sigopts.PublicKeyOption) (crypto.PublicKey, error) {
+func (e GMSM2Signer) PublicKey(_ ...PublicKeyOption) (crypto.PublicKey, error) {
 	return e.Public(), nil
 }
 
@@ -75,7 +74,7 @@ func LoadGMSM2Verifier(pub gmsm2.PublicKey) (*GMSM2Verifier, error) {
 // PublicKey returns the public key that is used to verify signatures by
 // this verifier. As this value is held in memory, all options provided in arguments
 // to this method are ignored.
-func (e *GMSM2Verifier) PublicKey(_ ...sigopts.PublicKeyOption) (crypto.PublicKey, error) {
+func (e *GMSM2Verifier) PublicKey(_ ...PublicKeyOption) (crypto.PublicKey, error) {
 	return e.publicKey, nil
 }
 
@@ -84,7 +83,7 @@ func (e *GMSM2Verifier) PublicKey(_ ...sigopts.PublicKeyOption) (crypto.PublicKe
 // This function returns nil if the verification succeeded, and an error message otherwise.
 //
 // All options are ignored if specified.
-func (e *GMSM2Verifier) VerifySignature(signature, message io.Reader, _ ...sigopts.VerifyOption) error {
+func (e *GMSM2Verifier) VerifySignature(signature, message io.Reader, _ ...VerifyOption) error {
 	if signature == nil {
 		return errors.New("nil signature passed to VerifySignature")
 	}
@@ -157,6 +156,6 @@ func NewGMSM2SignerVerifier(rand io.Reader) (*GMSM2SignerVerifier, gmsm2.Private
 // PublicKey returns the public key that is used to verify signatures by
 // this verifier. As this value is held in memory, all options provided in arguments
 // to this method are ignored.
-func (e GMSM2SignerVerifier) PublicKey(_ ...sigopts.PublicKeyOption) (crypto.PublicKey, error) {
+func (e GMSM2SignerVerifier) PublicKey(_ ...PublicKeyOption) (crypto.PublicKey, error) {
 	return e.publicKey, nil
 }
