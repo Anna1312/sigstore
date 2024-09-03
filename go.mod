@@ -15,6 +15,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/secure-systems-lab/go-securesystemslib v0.8.0
 	github.com/segmentio/ksuid v1.0.4
+	github.com/sigstore/sigstore/pkg/signature/gm/sm2 v0.0.0-00010101000000-000000000000
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/stretchr/testify v1.8.4
 	github.com/theupdateframework/go-tuf v0.7.0
@@ -43,7 +44,5 @@ require (
 	gopkg.in/go-jose/go-jose.v2 v2.6.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-require github.com/sigstore/sigstore/pkg/signature/gm/sm2 v0.0.0
 
 replace github.com/sigstore/sigstore/pkg/signature/gm/sm2 => ./pkg/signature/gm/sm2
