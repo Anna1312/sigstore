@@ -30,6 +30,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	x5092 "github.com/tjfoc/gmsm/x509"
 
 	"github.com/letsencrypt/boulder/goodkey"
 )
@@ -70,7 +71,11 @@ func MarshalPublicKeyToDER(pub crypto.PublicKey) ([]byte, error) {
 	if pub == nil {
 		return nil, errors.New("empty key")
 	}
-	return x509.MarshalPKIXPublicKey(pub)
+	k, err := x509.MarshalPKIXPublicKey(pub)
+	if err != nil {
+		k, err = x5092.MarshalPKIXPublicKey(pub)
+	}
+	return k, err
 }
 
 // MarshalPublicKeyToPEM converts a crypto.PublicKey into a PEM-encoded byte slice
