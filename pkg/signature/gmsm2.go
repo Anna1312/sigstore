@@ -23,7 +23,7 @@ func LoadGMSM2Signer(priv gmsm2.PrivateKey) (*GMSM2Signer, error) {
 }
 
 // SignMessage signs the provided message. Passing the WithDigest option is not
-// supported as ED25519 performs a two pass hash over the message during the
+// supported as gmsm2 performs a two pass hash over the message during the
 // signing process.
 //
 // All options are ignored.
@@ -51,7 +51,7 @@ func (e GMSM2Signer) PublicKey(_ ...PublicKeyOption) (crypto.PublicKey, error) {
 }
 
 // Sign computes the signature for the specified message; the first and third arguments to this
-// function are ignored as they are not used by the ED25519 algorithm.
+// function are ignored as they are not used by the gmsm2 algorithm.
 func (e GMSM2Signer) Sign(_ io.Reader, message []byte, _ crypto.SignerOpts) ([]byte, error) {
 	if message == nil {
 		return nil, errors.New("message must not be nil")
@@ -63,7 +63,7 @@ type GMSM2Verifier struct {
 	publicKey gmsm2.PublicKey
 }
 
-// LoadGMSM2Verifier returns a Verifier that verifies signatures using the specified ED25519 public key.
+// LoadGMSM2Verifier returns a Verifier that verifies signatures using the specified gmsm2 public key.
 func LoadGMSM2Verifier(pub gmsm2.PublicKey) (*GMSM2Verifier, error) {
 
 	return &GMSM2Verifier{
@@ -106,26 +106,23 @@ func (e *GMSM2Verifier) VerifySignature(signature, message io.Reader, _ ...Verif
 	return nil
 }
 
-// GMSM2SignerVerifier is a signature.SignerVerifier that uses the Ed25519 public-key signature system
+// GMSM2SignerVerifier is a signature.SignerVerifier that uses the gmsm2 public-key signature system
 type GMSM2SignerVerifier struct {
 	*GMSM2Verifier
 	*GMSM2Signer
 }
 
 // LoadGMSM2SignerVerifier creates a combined signer and verifier. This is
-// a convenience object that simply wraps an instance of ED25519Signer and ED25519Verifier.
+// a convenience object that simply wraps an instance of gmsm2Signer and gmsm2Verifier.
 func LoadGMSM2SignerVerifier(priv gmsm2.PrivateKey) (*GMSM2SignerVerifier, error) {
 	signer, err := LoadGMSM2Signer(priv)
 	if err != nil {
-		return nil, fmt.Errorf("initializing signer: %w", err)
+		return nil, fmt.Errorf("initializing gmsm2 signer: %w", err)
 	}
-	pub, ok := priv.Public().(gmsm2.PublicKey)
-	if !ok {
-		return nil, fmt.Errorf("given key is not ed25519.PublicKey")
-	}
+	pub := priv.PublicKey
 	verifier, err := LoadGMSM2Verifier(pub)
 	if err != nil {
-		return nil, fmt.Errorf("initializing verifier: %w", err)
+		return nil, fmt.Errorf("initializing gmsm2 verifier: %w", err)
 	}
 
 	return &GMSM2SignerVerifier{
@@ -134,14 +131,14 @@ func LoadGMSM2SignerVerifier(priv gmsm2.PrivateKey) (*GMSM2SignerVerifier, error
 	}, nil
 }
 
-// NewDefaultGMSM2SignerVerifier creates a combined signer and verifier using ED25519.
-// This creates a new ED25519 key using crypto/rand as an entropy source.
+// NewDefaultGMSM2SignerVerifier creates a combined signer and verifier using gmsm2.
+// This creates a new gmsm2 key using crypto/rand as an entropy source.
 func NewDefaultGMSM2SignerVerifier() (*GMSM2SignerVerifier, gmsm2.PrivateKey, error) {
 	return NewGMSM2SignerVerifier(rand.Reader)
 }
 
-// NewGMSM2SignerVerifier creates a combined signer and verifier using ED25519.
-// This creates a new ED25519 key using the specified entropy source.
+// NewGMSM2SignerVerifier creates a combined signer and verifier using gmsm2.
+// This creates a new gmsm2 key using the specified entropy source.
 func NewGMSM2SignerVerifier(rand io.Reader) (*GMSM2SignerVerifier, gmsm2.PrivateKey, error) {
 	priv, err := gmsm2.GenerateKey(rand)
 
