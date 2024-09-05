@@ -73,7 +73,7 @@ func MarshalPublicKeyToDER(pub crypto.PublicKey) ([]byte, error) {
 	}
 	k, err := x509.MarshalPKIXPublicKey(pub)
 	if err != nil {
-		k, err = x5092.MarshalPKIXPublicKey(pub)
+		k, err = x5092.MarshalPKIXPublicKey(&pub)
 	}
 	return k, err
 }
