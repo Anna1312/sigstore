@@ -71,11 +71,12 @@ func MarshalPublicKeyToDER(pub crypto.PublicKey) ([]byte, error) {
 	if pub == nil {
 		return nil, errors.New("empty key")
 	}
-	fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER %T, v: %v", pub, pub))
 	k, err := x509.MarshalPKIXPublicKey(pub)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER try sm2"))
-		k, err = x5092.MarshalPKIXPublicKey(&pub)
+		p := &pub
+		fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER t: %T, t: %T, t: %T t: %T", pub, *&pub, &pub, p))
+		k, err = x5092.MarshalPKIXPublicKey(p)
 	}
 	return k, err
 }
