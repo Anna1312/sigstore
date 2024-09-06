@@ -30,6 +30,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"github.com/tjfoc/gmsm/sm2"
 	x5092 "github.com/tjfoc/gmsm/x509"
 
 	"github.com/letsencrypt/boulder/goodkey"
@@ -74,8 +75,12 @@ func MarshalPublicKeyToDER(pub crypto.PublicKey) ([]byte, error) {
 	k, err := x509.MarshalPKIXPublicKey(pub)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER try sm2"))
-		p := &pub
-		fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER t: %T, t: %T, t: %T t: %T", pub, *&pub, &pub, p))
+		value, ok := pub.(sm2.PublicKey)
+		if !ok {
+			fmt.Println(fmt.Sprintf("assert pub sm2.PublicKey failed"))
+		}
+		p := &value
+		fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER t: %T", p))
 		k, err = x5092.MarshalPKIXPublicKey(p)
 	}
 	return k, err
