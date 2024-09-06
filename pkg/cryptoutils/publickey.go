@@ -58,7 +58,11 @@ func UnmarshalPEMToPublicKey(pemBytes []byte) (crypto.PublicKey, error) {
 	}
 	switch derBytes.Type {
 	case string(PublicKeyPEMType):
-		return x509.ParsePKIXPublicKey(derBytes.Bytes)
+		pub, err := x509.ParsePKIXPublicKey(derBytes.Bytes)
+		if err != nil {
+			pub, err = x5092.ParsePKIXPublicKey(derBytes.Bytes)
+		}
+		return pub, err
 	case string(PKCS1PublicKeyPEMType):
 		return x509.ParsePKCS1PublicKey(derBytes.Bytes)
 	default:
