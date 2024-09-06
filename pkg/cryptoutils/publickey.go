@@ -60,8 +60,20 @@ func UnmarshalPEMToPublicKey(pemBytes []byte) (crypto.PublicKey, error) {
 	case string(PublicKeyPEMType):
 		pub, err := x509.ParsePKIXPublicKey(derBytes.Bytes)
 		if err != nil {
+			fmt.Println("gm sm2 ParsePKIXPublicKey")
 			pub, err = x5092.ParsePKIXPublicKey(derBytes.Bytes)
+			pubKey, ok := pub.(*ecdsa.PublicKey)
+			if ok {
+				if pubKey.Curve == sm2.P256Sm2() {
+					pub = &sm2.PublicKey{
+						Curve: pubKey.Curve,
+						X:     pubKey.X,
+						Y:     pubKey.Y,
+					}
+				}
+			}
 		}
+		fmt.Println(fmt.Sprintf("ParsePKIXPublicKey pub: %T, err： %v", pub, err))
 		return pub, err
 	case string(PKCS1PublicKeyPEMType):
 		return x509.ParsePKCS1PublicKey(derBytes.Bytes)
