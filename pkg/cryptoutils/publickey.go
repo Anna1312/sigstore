@@ -65,7 +65,7 @@ func UnmarshalPEMToPublicKey(pemBytes []byte) (crypto.PublicKey, error) {
 			pubKey, ok := pub.(*ecdsa.PublicKey)
 			if ok {
 				if pubKey.Curve == sm2.P256Sm2() {
-					pub = &sm2.PublicKey{
+					pub = sm2.PublicKey{
 						Curve: pubKey.Curve,
 						X:     pubKey.X,
 						Y:     pubKey.Y,
