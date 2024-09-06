@@ -21,6 +21,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rsa"
 	"errors"
+	"fmt"
 	gmsm2 "github.com/tjfoc/gmsm/sm2"
 	"io"
 	"os"
@@ -57,6 +58,7 @@ func LoadVerifierWithOpts(publicKey crypto.PublicKey, opts ...LoadOption) (Verif
 		o.ApplyRSAPSS(&rsaPSSOptions)
 	}
 
+	fmt.Println(fmt.Sprintf("LoadVerifierWithOpts public key type %T", publicKey))
 	switch pk := publicKey.(type) {
 	case *rsa.PublicKey:
 		if rsaPSSOptions != nil {
@@ -71,6 +73,7 @@ func LoadVerifierWithOpts(publicKey crypto.PublicKey, opts ...LoadOption) (Verif
 		}
 		return LoadED25519Verifier(pk)
 	case gmsm2.PublicKey:
+		fmt.Println(fmt.Sprintf("LoadVerifierWithOpts gmsm2.PublicKey"))
 		return LoadGMSM2Verifier(pk)
 	}
 	return nil, errors.New("unsupported public key type")
