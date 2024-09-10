@@ -94,10 +94,14 @@ func MarshalPublicKeyToDER(pub crypto.PublicKey) ([]byte, error) {
 		value, ok := pub.(sm2.PublicKey)
 		if !ok {
 			fmt.Println(fmt.Sprintf("assert pub sm2.PublicKey failed"))
+			p := pub
+			k, err = x5092.MarshalPKIXPublicKey(p)
+			fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER t: %T", p))
+		} else {
+			p := &value
+			fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER t: %T", p))
+			k, err = x5092.MarshalPKIXPublicKey(p)
 		}
-		p := &value
-		fmt.Println(fmt.Sprintf("MarshalPublicKeyToDER t: %T", p))
-		k, err = x5092.MarshalPKIXPublicKey(p)
 	}
 	return k, err
 }
